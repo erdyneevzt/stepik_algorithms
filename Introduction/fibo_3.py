@@ -1,46 +1,49 @@
 def fib_mod(n, m):
+    pisano = []
+    pisano.append(0)
 
-    # ----------- Ищем первый ноль в периоде
-    fibo_list = [0, 1]
+    # при делении на 1 остаток будет всегда 0
+    if m == 1:
+        return pisano
 
-    # Начинаем с единицы
-    i = 1
+    pisano.append(1)
 
-    while (fibo_list[i] % m) != 0:
-        fibo_list.append(fibo_list[i-1] + fibo_list[i])
-        i += 1
-    # -------------
+    # при m > 0 остатки от деления первого и второго числа Фибоначчи
+    # всегда 0 и 1
+    if n <= 1:
+        return pisano
 
-    # ------------- Проверка периодов 1,2,4
-    period_nums = [1, 2, 4]
+    n0 = 0
+    n1 = 1
+    for __ in range(m * 6):
+        # для ускорения вычисляем полностью числа Фибоначчи
+        # берём только остатки по модулю m
+        n0, n1 = n1, (n0 + n1) % m
 
-    for l in period_nums:
-        # Докладываем числа в ряд в соответствии с периодом
-        for j in range(i*l, i*l*2):
-            fibo_list.append(fibo_list[j - 1] + fibo_list[j])
+        pisano.append(n1 % m)
 
-        ostatot_m = []
-        # Получаем остаток от деления
-        for j in range(len(fibo_list)):
-            ostatot_m.append(fibo_list[j] % m)
-
-        # Проверяем период
-        if ostatot_m[1:i*l+1] == ostatot_m[i*l+1:i*l*2+1]:
-            period = i*l
+        # Проверяем не начался ли новый период
+        # период всегда начинается с 0 и 1
+        if pisano[len(pisano) - 1] == 1 and pisano[len(pisano) - 2] == 0:
             break
-    # print('Период равен=', period)
-    # print('Остаток равен=', ostatot_m[n % period])
-    return ostatot_m[n % period]
+
+    return pisano[:-2]
     # -----------------------------------
 
 
 def main():
     n, m = map(int, input().split())
-    print(fib_mod(n, m))
-
+    pisano = fib_mod(n, m)
+    print(pisano[n % len(pisano)])
 
 if __name__ == "__main__":
     main()
 
 
-# Решение валится на строке 9
+# Решение из форума
+# n,m=map(int,input().split())
+# o,i=[0,1],2
+# while not (o[i-2]==0 and o[i-1]==1) or i<=2:
+# 	o.append((o[i-2]+o[i-1])%m)
+# 	i+=1
+# print(o[n%(i-2)])
